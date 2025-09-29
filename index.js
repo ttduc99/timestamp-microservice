@@ -30,3 +30,40 @@ app.get("/api/hello", function (req, res) {
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+// Middleware cho JSON response
+app.use(express.json());
+
+// Endpoint /api/:date?
+app.get("/api/:date?", (req, res) => {
+  let dateString = req.params.date;
+
+  // Nếu không có date parameter → dùng ngày hiện tại
+  let date;
+  if (!dateString) {
+    date = new Date();
+  } else {
+    // Nếu là số (timestamp), parse sang number
+    if (!isNaN(dateString)) {
+      date = new Date(Number(dateString));
+    } else {
+      date = new Date(dateString);
+    }
+  }
+
+  // Kiểm tra date hợp lệ
+  if (date.toString() === "Invalid Date") {
+    res.json({ error: "Invalid Date" });
+  } else {
+    res.json({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    });
+  }
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
