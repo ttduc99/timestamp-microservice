@@ -27,24 +27,24 @@ app.get("/api/hello", function (req, res) {
 
 
 // Listen on port set in environment variable or default to 3000
-var listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
+// var listener = app.listen(process.env.PORT || 3000, function () {
+//   console.log('Your app is listening on port ' + listener.address().port);
+// });
 
 // Middleware cho JSON response
 app.use(express.json());
 
-// Endpoint /api/:date?
+// API /api/:date?
 app.get("/api/:date?", (req, res) => {
   let dateString = req.params.date;
-
-  // Nếu không có date parameter → dùng ngày hiện tại
   let date;
+
   if (!dateString) {
+    // Không có parameter → lấy thời gian hiện tại
     date = new Date();
   } else {
-    // Nếu là số (timestamp), parse sang number
-    if (!isNaN(dateString)) {
+    // Nếu là số (timestamp)
+    if (/^\d+$/.test(dateString)) {
       date = new Date(Number(dateString));
     } else {
       date = new Date(dateString);
